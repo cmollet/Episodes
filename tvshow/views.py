@@ -139,9 +139,9 @@ def recommended(request):
 
 def search(request):
     search_query = request.GET.get('query')
-    show_list = Show.objects.filter(seriesName__icontains=search_query)
+    show_list = Show.objects.filter(series_name__icontains=search_query)
     episode_list = Episode.objects.filter(
-        Q(episodeName__icontains=search_query) | Q(overview__icontains=search_query)
+        Q(episode_name__icontains=search_query) | Q(overview__icontains=search_query)
     )[:10]
     if (show_list or episode_list) and search_query:
         return render(request, 'tvshow/search_page.html', {'show_data': show_list, 'episode_list': episode_list})
@@ -150,7 +150,7 @@ def search(request):
 
 def update_all_continuing(request):
     show_list = Show.objects.filter(
-        Q(runningStatus='Continuing'), Q(last_updated__lte=timezone.now()-timedelta(days=7))
+        Q(running_status='Continuing'), Q(last_updated__lte=timezone.now()-timedelta(days=7))
     )
     for show in show_list:
         flag = show.update_show_data()
