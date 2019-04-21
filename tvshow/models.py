@@ -14,7 +14,7 @@ class Show(models.Model):
     series_name = models.CharField(max_length=50)
     overview = models.TextField()
     banner = models.CharField(max_length=150, null=True, blank=True)
-    imbd_id = models.CharField(max_length=50, null=True, blank=True)
+    imdb_id = models.CharField(max_length=50, null=True, blank=True)
     status_watched = models.BooleanField(default=False)
     slug = models.SlugField(null=True, blank=True)
     running_status = models.CharField(max_length=50)
@@ -136,12 +136,12 @@ class Season(models.Model):
     @property
     def watch_count(self):
         return Episode.objects.filter(
-            Q(season=self), Q(status_watched=True), Q(firstAired__lte=datetime.now())
+            Q(season=self), Q(status_watched=True), Q(first_aired__lte=datetime.now())
         ).count()
 
     @property
     def episode_count(self):
-        return Episode.objects.filter(Q(season=self), Q(firstAired__lte=datetime.now())).count()
+        return Episode.objects.filter(Q(season=self), Q(first_aired__lte=datetime.now())).count()
 
     @property
     def status_watched_check(self):
@@ -154,7 +154,7 @@ class Season(models.Model):
 
 class Episode(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
-    episode_name = models.CharField(max_length=50, blank=True, null=True)
+    episode_name = models.CharField(max_length=255, blank=True, null=True)
     number = models.IntegerField()
     first_aired = models.DateField(null=True, blank=True)
     date_watched = models.DateField(null=True, blank=True, auto_now=True, auto_now_add=False)
@@ -163,7 +163,7 @@ class Episode(models.Model):
     status_watched = models.BooleanField(default=False)
 
     def __str__(self):
-        showname = self.season.show.seriesName
+        showname = self.season.show.series_name
         return_string = showname + " S" + str(self.season.number) + "E" + str(self.number)
         return return_string
 
