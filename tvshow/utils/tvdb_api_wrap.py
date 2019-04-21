@@ -2,6 +2,7 @@ import json
 import os
 
 import requests
+from django.conf import settings
 from django.utils import six
 
 if six.PY2:
@@ -11,9 +12,9 @@ else:
 
 
 def get_new_token():
-    apikey = os.getenv('TVDB_API_KEY')
-    username = os.getenv('TVDB_USERNAME')
-    userkey = os.getenv('TVDB_USER_KEY')
+    apikey = settings.TVDB_API_KEY
+    username = settings.TVDB_USERNAME
+    userkey = settings.TVDB_USER_KEY
     payload = json.dumps({'apikey': apikey, 'username': username, 'userkey': userkey})
     url = 'https://api.thetvdb.com/login'
     headers = {
