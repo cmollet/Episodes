@@ -10,39 +10,39 @@ from .utils.tvdb_api_wrap import get_season_episode_list, get_all_episodes
 
 
 class Show(models.Model):
-    tvdbID = models.CharField(max_length=50)
-    seriesName = models.CharField(max_length=50)
+    tvdb_id = models.CharField(max_length=50)
+    series_name = models.CharField(max_length=50)
     overview = models.TextField()
     banner = models.CharField(max_length=150, null=True, blank=True)
-    imbdID = models.CharField(max_length=50, null=True, blank=True)
+    imbd_id = models.CharField(max_length=50, null=True, blank=True)
     status_watched = models.BooleanField(default=False)
     slug = models.SlugField(null=True, blank=True)
-    runningStatus = models.CharField(max_length=50)
-    firstAired = models.DateField(null=True, blank=True)
+    running_status = models.CharField(max_length=50)
+    first_aired = models.DateField(null=True, blank=True)
     modified = models.DateTimeField(null=True, blank=True, auto_now=True, auto_now_add=False)
-    siteRating = models.DecimalField(max_digits=5, null=True, decimal_places=3, blank=True, default=0)
-    userRating = models.DecimalField(max_digits=5, null=True, decimal_places=3, blank=True, default=0)
+    site_rating = models.DecimalField(max_digits=5, null=True, decimal_places=3, blank=True, default=0)
+    user_rating = models.DecimalField(max_digits=5, null=True, decimal_places=3, blank=True, default=0)
     network = models.CharField(max_length=50)
     genre_list = models.TextField(null=True, blank=True)
     last_updated = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
-        return self.seriesName
+        return self.series_name
 
     def add_show(self, data, runningStatus):
-        self.seriesName = data['seriesName']
-        self.slug = slugify(self.seriesName)
+        self.series_name = data['seriesName']
+        self.slug = slugify(self.series_name)
         self.overview = data['overview']
         self.banner = 'http://thetvdb.com/banners/' + data['banner']
-        self.imbdID = data['imdbID']
-        self.tvdbID = data['tvdbID']
-        self.siteRating = data['siteRating']
+        self.imbd_id = data['imdbID']
+        self.tvdb_id = data['tvdbID']
+        self.site_rating = data['siteRating']
         self.network = data['network']
-        self.runningStatus = runningStatus
+        self.running_status = runningStatus
         self.genre_list = json.dumps(data['genre'])
         self.last_updated = timezone.now()
         try:
-            self.firstAired = datetime.strptime(data['firstAired'], '%Y-%m-%d').date()
+            self.first_aired = datetime.strptime(data['firstAired'], '%Y-%m-%d').date()
         except:
             pass
         self.save()
@@ -75,7 +75,7 @@ class Show(models.Model):
 
     def update_show_data(self):
         flag = False
-        tvdbID = self.tvdbID
+        tvdbID = self.tvdb_id
         current_season = self.season_set.all().last()
         current_season_db_data = current_season.episode_set.all()
         current_season_oln_data = get_season_episode_list(tvdbID, current_season.number)
@@ -154,11 +154,11 @@ class Season(models.Model):
 
 class Episode(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
-    episodeName = models.CharField(max_length=50, blank=True, null=True)
+    episode_name = models.CharField(max_length=50, blank=True, null=True)
     number = models.IntegerField()
-    firstAired = models.DateField(null=True, blank=True)
+    first_aired = models.DateField(null=True, blank=True)
     date_watched = models.DateField(null=True, blank=True, auto_now=True, auto_now_add=False)
-    tvdbID = models.CharField(max_length=50)
+    tvdb_id = models.CharField(max_length=50)
     overview = models.TextField(null=True, blank=True)
     status_watched = models.BooleanField(default=False)
 
@@ -169,13 +169,13 @@ class Episode(models.Model):
 
     def add_episode(self, season, data):
         self.season = season
-        self.episodeName = data['episodeName']
+        self.episode_name = data['episodeName']
         self.number = int(data['number'])
         try:
-            self.firstAired = datetime.strptime(data['firstAired'], '%Y-%m-%d').date()
+            self.first_aired = datetime.strptime(data['firstAired'], '%Y-%m-%d').date()
         except:
             pass
-        self.tvdbID = data['tvdbID']
+        self.tvdb_id = data['tvdbID']
         try:
             self.overview = data['overview']
         except:
@@ -194,11 +194,11 @@ class Episode(models.Model):
             self.season.save()
 
     def compare_or_update(self, new_data):
-        self.episodeName = new_data['episodeName']
+        self.episode_name = new_data['episodeName']
         self.save()
         if new_data['firstAired'] != "":
             try:
-                self.firstAired = new_data['firstAired']
+                self.first_aired = new_data['firstAired']
                 self.save()
             except:
                 pass
