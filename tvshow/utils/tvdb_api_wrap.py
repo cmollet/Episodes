@@ -1,7 +1,8 @@
-import requests
 import json
-from django.utils import six
 import os
+
+import requests
+from django.utils import six
 
 if six.PY2:
     from urllib import quote

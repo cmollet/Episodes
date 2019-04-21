@@ -95,3 +95,5 @@ ENV/
 # autoenz
 .autoenv.zsh
 .autoenv_leave.zsh
+
+.idea

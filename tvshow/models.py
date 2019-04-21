@@ -1,9 +1,11 @@
-from django.db import models
+import json
 from datetime import datetime
+
+from django.db import models
+from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
-from django.db.models import Q
-import json
+
 from .utils.tvdb_api_wrap import get_season_episode_list, get_all_episodes
 
 

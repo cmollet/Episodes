@@ -1,9 +1,11 @@
+import os
+from random import shuffle
+
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.preprocessing import scale
+
 from .cts import build_training_set
-import os
-from random import shuffle
 
 
 def get_recommendations():

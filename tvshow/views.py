@@ -1,14 +1,16 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_protect
-from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
-from .utils.recommender import get_recommendations
-from .models import Show, Season, Episode
-from django.db.models import Q
-from django.contrib import messages
 from datetime import timedelta
-from django.utils import timezone
 from random import shuffle
+
+from django.contrib import messages
+from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
+
+from .models import Show, Season, Episode
+from .utils.recommender import get_recommendations
+from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
 
 
 def home(request, view_type):
