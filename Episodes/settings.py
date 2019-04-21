@@ -21,7 +21,7 @@ PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '%qufh2ea8!-$%_ctzw=in*d2__i#s*3_mph82!+(3m9g*!%@tt'
+SECRET_KEY = '2,)A/K&@=KQR4kyZi(A9|9\88=(/\pnR~W5B-(mC/k,=E;n_sQB?j/~GrYy_gY6d'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -108,7 +108,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Asia/Kolkata'
+TIME_ZONE = 'America/Chicago'
 
 USE_I18N = True
 

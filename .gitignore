@@ -91,3 +91,7 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# autoenz
+.autoenv.zsh
+.autoenv_leave.zsh
