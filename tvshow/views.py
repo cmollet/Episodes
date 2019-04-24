@@ -2,6 +2,7 @@ from datetime import timedelta
 from random import shuffle
 
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -13,6 +14,7 @@ from .utils.recommender import get_recommendations
 from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
 
 
+@login_required
 def home(request, view_type):
     if view_type == 'all':
         show_data = Show.objects.all().order_by('-modified')
