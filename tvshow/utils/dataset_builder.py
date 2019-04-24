@@ -67,7 +67,7 @@ def get_shows_for_network(network):
     url = 'http://thetvdb.com/?language=7&genre=' + '&network=' + quote(network) + '&order=fanartcount%20desc&searching=Search&tab=advancedsearch'
     r = requests.get(url, headers=headers)
     html = r.text.encode('utf8')
-    soup = BeautifulSoup(html, "lxml")
+    soup = BeautifulSoup(html, features="html5lib")
     ex = soup.find('table', attrs={'id': "listtable"})
     shows = ex.findAll('tr')
     for show in shows[1:51]:
