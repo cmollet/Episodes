@@ -58,7 +58,7 @@ def add(request):
         tvdbID = request.POST.get('show_id')
         runningStatus = request.POST.get('runningStatus')
         try:
-            show = Show.objects.get(tvdbID=tvdbID)
+            show = Show.objects.get(tvdb_id=tvdbID)
             slug = show.slug
         except Show.DoesNotExist as e:
             show_data = get_series_with_id(int(tvdbID))
