@@ -45,7 +45,7 @@
     <ul class="list-group">
       <li class="list-group-item list-group-item-success">Next to Watch</li>
       <li class="list-group-item">
-        {{next_episode.number}}. <a data-toggle="collapse" href="#collapseE{{next_episode.number}}" aria-expanded="false" aria-controls="collapseE{{next_episode.number}}">{{next_episode.episodeName}}</a> <small>{{next_episode.firstAired}}</small>
+        {{next_episode.number}}. <a data-toggle="collapse" href="#collapseE{{next_episode.number}}" aria-expanded="false" aria-controls="collapseE{{next_episode.number}}">{{next_episode.episode_name}}</a> <small>{{next_episode.first_aired}}</small>
         <form class='form-inline float-xs-right' action="/episode_swt" method="post">{% csrf_token %}
           <input type="hidden" name="episode_swt" value="{{next_episode.id}}">
           {% if next_episode.status_watched == True %}
@@ -66,7 +66,7 @@
     {% endif %}
     <br>
     <div class="card-block text-xs-center">
-      <button class="btn btn-danger">Site Rating : {{show.siteRating|floatformat:"1"}}</button>
+      <button class="btn btn-danger">Site Rating : {{show.site_rating|floatformat:"1"}}</button>
       <br>
       <br>
       <button class="btn btn-success" data-toggle="modal" data-target=".change-user-rating">Your Rating : {{show.user_rating|floatformat:"1"}}</button>
@@ -106,7 +106,7 @@
         <form action="/delete_show" method="post">{% csrf_token %}
         <div class="modal-body">
             <p>
-              {{show.seriesName}} and all its episodes will be deleted.
+              {{show.series_name}} and all its episodes will be deleted.
             </p>
             <input type="hidden" value={{show.id}} name='show_id'>
         </div>
