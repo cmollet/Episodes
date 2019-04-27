@@ -57,8 +57,8 @@ def build_training_set():
             for genre in show_genre:
                 show_genre_list[genres.index(genre)] = 1.0/length
             show_datas = [
-                show.seriesName, show.tvdbID, show.network, int(show.userRating),
-                (float(show.siteRating)**2)*float(show.userRating)
+                show.series_name, show.tvdb_id, show.network, int(show.user_rating),
+                (float(show.site_rating)**2)*float(show.user_rating)
             ]
             tv_df = tv_df.append(pd.DataFrame([show_datas+show_genre_list], columns=cols+genres))
         extended_tv_df = pd.read_csv(os.path.join(module_dir, 'extra_train_data.csv'))
