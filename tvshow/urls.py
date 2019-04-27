@@ -2,7 +2,7 @@ from django.conf.urls import url
 
 from .views import (
     home, add_search, add, single_show, episode_swt, season_swt, search, update_show,
-    update_show_rating, recommended, update_all_continuing, delete_show
+    update_show_rating, recommended, update_all_continuing, delete_show, logout_view
 )
 
 urlpatterns = [
@@ -18,4 +18,5 @@ urlpatterns = [
     url(r'^show/(?P<show_slug>[a-zA-Z0-9-]*$)', single_show),
     url(r'^episode_swt', episode_swt),
     url(r'^season_swt', season_swt),
+    url(r'^logout', logout_view, name='logout'),
 ]

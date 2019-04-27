@@ -2,6 +2,7 @@ from datetime import timedelta
 from random import shuffle
 
 from django.contrib import messages
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.http import HttpResponseRedirect
@@ -174,4 +175,9 @@ def delete_show(request):
                 return HttpResponseRedirect('/')
             except:
                 return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
+
+
+def logout_view(request):
+    logout(request)
     return HttpResponseRedirect('/')
