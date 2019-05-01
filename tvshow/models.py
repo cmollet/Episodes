@@ -113,7 +113,7 @@ class Season(models.Model):
     status_watched = models.BooleanField(default=False)
 
     def __str__(self):
-        showname = self.show.seriesName
+        showname = self.show.series_name
         return_string = showname + " S" + str(self.number)
         return return_string
 
