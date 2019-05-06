@@ -11,7 +11,7 @@
         <a href='/show/{{ show.slug }}'>
           <img class="card-img-top img-fluid" src="{{ show.banner }}" alt="Card image cap">
         </a>
-        <progress class="progress progress-striped" value="{{ show.episode_watch_count }}" max="{{show.total_episodes}}"></progress>
+        <progress class="progress progress-striped" value="{{ show.episode_watch_count }}" max="{{ show.total_episodes }}"></progress>
       </div>
     {% endfor %}
   </div>
@@ -23,7 +23,7 @@
       {% for episode in episode_list %}
       <li class="list-group-item">
         <h5 class="list-group-item-heading">{{ episode.season.show.series_name }} S{{ episode.season.number }}</h5>
-        {{ episode.number }}. {{ episode.episode_name }}</a> <small>{{ episode.first_aired }}</small>
+        {{ episode.number }}. {{ episode.episode_name }} <small>{{ episode.first_aired }}</small>
         <p class="list-group-item-text">{{ episode.overview }}</p>
       </li>
       <div class="collapse" id="collapseS{{ episode.season.number }}E{{ episode.number }}">

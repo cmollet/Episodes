@@ -170,7 +170,7 @@ def update_all_continuing(request):
         show.last_updated = timezone.now()
         show.save()
         if flag:
-            messages.success(request, '%s has been updated.' % show.seriesName)
+            messages.success(request, '%s has been updated.' % show.series_name)
     return HttpResponseRedirect('/')
 
 
