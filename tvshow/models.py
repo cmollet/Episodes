@@ -71,7 +71,13 @@ class Show(models.Model):
 
     @property
     def next_episode(self):
-        return Episode.objects.filter(Q(season__show=self), Q(status_watched=False)).first()
+        return Episode.objects.filter(
+            season__show=self,
+            status_watched=False
+        ).order_by(
+            'number',
+            'first_aired'
+        ).first()
 
     def update_show_data(self):
         flag = False
