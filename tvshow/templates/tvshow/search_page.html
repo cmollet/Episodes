@@ -8,10 +8,10 @@
       <div class="card-header">Shows</div>
     {% for show in show_data %}
       <div class="card-block">
-        <a href='/show/{{show.slug}}'>
-          <img class="card-img-top img-fluid" src="{{show.banner}}" alt="Card image cap">
+        <a href='/show/{{ show.slug }}'>
+          <img class="card-img-top img-fluid" src="{{ show.banner }}" alt="Card image cap">
         </a>
-        <progress class="progress progress-striped" value="{{show.episode_watch_count}}" max="{{show.total_episodes}}"></progress>
+        <progress class="progress progress-striped" value="{{ show.episode_watch_count }}" max="{{ show.total_episodes }}"></progress>
       </div>
     {% endfor %}
   </div>
@@ -22,14 +22,14 @@
     <ul class="list-group">
       {% for episode in episode_list %}
       <li class="list-group-item">
-        <h5 class="list-group-item-heading">{{episode.season.show.seriesName}} S{{episode.season.number}}</h5>
-        {{episode.number}}. {{episode.episodeName}}</a> <small>{{episode.firstAired}}</small>
-        <p class="list-group-item-text">{{episode.overview}}</p>
+        <h5 class="list-group-item-heading">{{ episode.season.show.series_name }} S{{ episode.season.number }}</h5>
+        {{ episode.number }}. {{ episode.episode_name }} <small>{{ episode.first_aired }}</small>
+        <p class="list-group-item-text">{{ episode.overview }}</p>
       </li>
-      <div class="collapse" id="collapseS{{episode.season.number}}E{{episode.number}}">
+      <div class="collapse" id="collapseS{{ episode.season.number }}E{{ episode.number }}">
         <div class="card card-block card-inverse card-danger">
           <p class="card-text">
-            {{episode.overview}}
+            {{ episode.overview }}
           </p>
         </div>
       </div>

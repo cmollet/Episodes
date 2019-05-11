@@ -1,16 +1,21 @@
-from django.shortcuts import render
-from django.http import HttpResponseRedirect
-from django.views.decorators.csrf import csrf_protect
-from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
-from .utils.recommender import get_recommendations
-from .models import Show,Season,Episode
-from django.db.models import Q
-from django.contrib import messages
 from datetime import timedelta
-from django.utils import timezone
 from random import shuffle
 
-# Create your views here.
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
+
+from .models import Show, Season, Episode
+from .utils.recommender import get_recommendations
+from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
+
+
+@login_required
 def home(request, view_type):
     if view_type == 'all':
         show_data = Show.objects.all().order_by('-modified')
@@ -20,8 +25,10 @@ def home(request, view_type):
         data = [show for show in show_data if not show.is_watched]
         show_data = data
         flag = True
-    return render(request, 'tvshow/home.html', {'show_data':show_data, 'flag':flag})
+    return render(request, 'tvshow/home.html', {'show_data': show_data, 'flag': flag})
 
+
+@login_required
 @csrf_protect
 def update_show(request):
     if request.method == 'POST':
@@ -31,9 +38,11 @@ def update_show(request):
             show.update_show_data()
             show.last_updated = timezone.now()
             show.save()
-            return HttpResponseRedirect('/show/%s'%show.slug)
+            return HttpResponseRedirect('/show/%s' % show.slug)
     return HttpResponseRedirect('/')
 
+
+@login_required
 @csrf_protect
 def update_show_rating(request):
     if request.method == 'POST':
@@ -41,19 +50,21 @@ def update_show_rating(request):
         show = Show.objects.get(id=show_id)
         if show:
             new_rating = request.POST.get('new_rating')
-            show.userRating = new_rating
+            show.user_rating = new_rating
             show.save()
-            return HttpResponseRedirect('/show/%s'%show.slug)
+            return HttpResponseRedirect('/show/%s' % show.slug)
     return HttpResponseRedirect('/')
 
+
+@login_required
 @csrf_protect
 def add(request):
     if request.method == 'POST':
         slug = ''
         tvdbID = request.POST.get('show_id')
         runningStatus = request.POST.get('runningStatus')
-        try :
-            show = Show.objects.get(tvdbID=tvdbID)
+        try:
+            show = Show.objects.get(tvdb_id=tvdbID)
             slug = show.slug
         except Show.DoesNotExist as e:
             show_data = get_series_with_id(int(tvdbID))
@@ -72,10 +83,11 @@ def add(request):
                         if season_episode['episodeName']:
                             episode = Episode()
                             episode.add_episode(season, season_episode)
-        return HttpResponseRedirect('/show/%s'%slug)
+        return HttpResponseRedirect('/show/%s' % slug)
     return HttpResponseRedirect('/all')
 
 
+@login_required
 @csrf_protect
 def add_search(request):
     context = {}
@@ -86,36 +98,44 @@ def add_search(request):
         if show_datalist is not None:
             context['Flag'] = True
             context['show_datalist'] = show_datalist
-    return render(request, 'tvshow/add_search.html', {'context':context})
+    return render(request, 'tvshow/add_search.html', {'context': context})
 
+
+@login_required
 @csrf_protect
 def single_show(request, show_slug):
-    show = Show.objects.get(slug__iexact = show_slug)
+    show = Show.objects.get(slug__iexact=show_slug)
     next_episode = show.next_episode
-    return render(request, 'tvshow/single.html', {'show':show, 'next_episode':next_episode})
+    return render(request, 'tvshow/single.html', {'show': show, 'next_episode': next_episode})
 
+
+@login_required
 @csrf_protect
 def episode_swt(request):
     if request.method == 'POST':
         episode_id = request.POST.get('episode_swt')
-        episode = Episode.objects.get(id = episode_id)
+        episode = Episode.objects.get(id=episode_id)
         if episode:
             episode.wst()
             show = episode.season.show
-            return HttpResponseRedirect('/show/%s'%show.slug)
+            return HttpResponseRedirect('/show/%s' % show.slug)
     return HttpResponseRedirect('/all')
 
+
+@login_required
 @csrf_protect
 def season_swt(request):
     if request.method == 'POST':
         season_id = request.POST.get('season_swt')
-        season = Season.objects.get(id = season_id)
+        season = Season.objects.get(id=season_id)
         if season:
             season.wst()
             show = season.show
-            return HttpResponseRedirect('/show/%s'%show.slug)
+            return HttpResponseRedirect('/show/%s' % show.slug)
     return HttpResponseRedirect('/all')
 
+
+@login_required
 def recommended(request):
     try:
         predictions = get_recommendations()
@@ -125,26 +145,36 @@ def recommended(request):
     for prediction in predictions:
         predicted_shows.append(get_series_with_id(prediction))
     shuffle(predicted_shows)
-    return render(request, 'tvshow/recommended.html', {'predicted_shows':predicted_shows})
+    return render(request, 'tvshow/recommended.html', {'predicted_shows': predicted_shows})
 
+
+@login_required
 def search(request):
     search_query = request.GET.get('query')
-    show_list = Show.objects.filter(seriesName__icontains=search_query)
-    episode_list = Episode.objects.filter(Q(episodeName__icontains=search_query)|Q(overview__icontains=search_query))[:10]
+    show_list = Show.objects.filter(series_name__icontains=search_query)
+    episode_list = Episode.objects.filter(
+        Q(episode_name__icontains=search_query) | Q(overview__icontains=search_query)
+    )[:10]
     if (show_list or episode_list) and search_query:
-        return render(request, 'tvshow/search_page.html', {'show_data':show_list, 'episode_list':episode_list})
+        return render(request, 'tvshow/search_page.html', {'show_data': show_list, 'episode_list': episode_list})
     return HttpResponseRedirect('/all')
 
+
+@login_required
 def update_all_continuing(request):
-    show_list = Show.objects.filter(Q(runningStatus='Continuing'),Q(last_updated__lte=timezone.now()-timedelta(days=7)))
+    show_list = Show.objects.filter(
+        Q(running_status='Continuing'), Q(last_updated__lte=timezone.now()-timedelta(days=7))
+    )
     for show in show_list:
         flag = show.update_show_data()
         show.last_updated = timezone.now()
         show.save()
         if flag:
-            messages.success(request, '%s has been updated.'%show.seriesName)
+            messages.success(request, '%s has been updated.' % show.series_name)
     return HttpResponseRedirect('/')
 
+
+@login_required
 @csrf_protect
 def delete_show(request):
     if request.method == 'POST':
@@ -156,4 +186,9 @@ def delete_show(request):
                 return HttpResponseRedirect('/')
             except:
                 return HttpResponseRedirect('/')
+    return HttpResponseRedirect('/')
+
+
+def logout_view(request):
+    logout(request)
     return HttpResponseRedirect('/')
