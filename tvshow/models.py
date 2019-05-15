@@ -75,8 +75,8 @@ class Show(models.Model):
             season__show=self,
             status_watched=False
         ).order_by(
-            'first_aired'
-            'number',
+            'first_aired',
+            'number'
         ).first()
 
     def update_show_data(self):
