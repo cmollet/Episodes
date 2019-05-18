@@ -6,7 +6,9 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 
-from .utils.tvdb_api_wrap import get_season_episode_list, get_all_episodes
+from .utils.tvdb_api_wrap import TvdbApiClient
+
+client = TvdbApiClient()
 
 
 class Show(models.Model):
@@ -84,7 +86,7 @@ class Show(models.Model):
         tvdbID = self.tvdb_id
         current_season = self.season_set.all().last()
         current_season_db_data = current_season.episode_set.all()
-        current_season_oln_data = get_season_episode_list(tvdbID, current_season.number)
+        current_season_oln_data = client.get_season_episode_list(tvdbID, current_season.number)
         counter = 0
         if current_season_oln_data:
             for db_episode, oln_episode in zip(current_season_db_data, current_season_oln_data):
@@ -98,7 +100,7 @@ class Show(models.Model):
                     episode.add_episode(current_season, new_episode)
                     flag = True
         range_starter = current_season.number + 1
-        new_seasons = get_all_episodes(tvdbID, range_starter)
+        new_seasons = client.get_all_episodes(tvdbID, range_starter)
         for i in range(len(new_seasons)):
             string = 'Season' + str(range_starter+i)
             season_data = new_seasons[string]

@@ -12,7 +12,10 @@ from django.views.decorators.csrf import csrf_protect
 
 from .models import Show, Season, Episode
 from .utils.recommender import get_recommendations
-from .utils.tvdb_api_wrap import search_series_list, get_series_with_id, get_all_episodes
+from .utils.tvdb_api_wrap import TvdbApiClient
+
+
+client = TvdbApiClient()
 
 
 @login_required
@@ -67,12 +70,12 @@ def add(request):
             show = Show.objects.get(tvdb_id=tvdbID)
             slug = show.slug
         except Show.DoesNotExist as e:
-            show_data = get_series_with_id(int(tvdbID))
+            show_data = client.get_series_with_id(int(tvdbID))
             if show_data is not None:
                 show = Show()
                 show.add_show(show_data, runningStatus)
                 slug = show.slug
-                seasons_data = get_all_episodes(int(tvdbID), 1)
+                seasons_data = client.get_all_episodes(int(tvdbID), 1)
                 for i in range(len(seasons_data)):
                     string = 'Season' + str(i+1)
                     season_data = seasons_data[string]
@@ -94,7 +97,7 @@ def add_search(request):
     context['Flag'] = False
     if request.method == 'POST':
         search_string = request.POST.get('search_string')
-        show_datalist = search_series_list(search_string)
+        show_datalist = client.search_series_list(search_string)
         if show_datalist is not None:
             context['Flag'] = True
             context['show_datalist'] = show_datalist
@@ -143,7 +146,7 @@ def recommended(request):
         predictions = []
     predicted_shows = []
     for prediction in predictions:
-        predicted_shows.append(get_series_with_id(prediction))
+        predicted_shows.append(client.get_series_with_id(prediction))
     shuffle(predicted_shows)
     return render(request, 'tvshow/recommended.html', {'predicted_shows': predicted_shows})
 

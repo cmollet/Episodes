@@ -97,3 +97,5 @@ ENV/
 .autoenv_leave.zsh
 
 .idea
+
+tags
