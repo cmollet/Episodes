@@ -6,10 +6,9 @@ from django.db.models import Q
 from django.utils import timezone
 from django.utils.text import slugify
 
-from .utils.tvdb_api_wrap import TvdbApiClient
+from tvshow.utils.tvdb_api_wrap import TvdbApiClient
 
 client = TvdbApiClient()
-
 
 class Show(models.Model):
     tvdb_id = models.CharField(max_length=50)

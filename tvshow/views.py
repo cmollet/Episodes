@@ -10,12 +10,8 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_protect
 
-from .models import Show, Season, Episode
+from .models import Show, Season, Episode, client
 from .utils.recommender import get_recommendations
-from .utils.tvdb_api_wrap import TvdbApiClient
-
-
-client = TvdbApiClient()
 
 
 @login_required
