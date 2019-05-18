@@ -161,8 +161,10 @@ def search(request):
 
 @login_required
 def update_all_continuing(request):
+    one_week_ago = timezone.now() - timedelta(days=7)
     show_list = Show.objects.filter(
-        Q(running_status='Continuing'), Q(last_updated__lte=timezone.now()-timedelta(days=7))
+        running_status='Continuing',
+        last_updated__lte=one_week_ago
     )
     for show in show_list:
         flag = show.update_show_data()

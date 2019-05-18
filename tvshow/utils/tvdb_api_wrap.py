@@ -1,10 +1,10 @@
 import logging
 import os
 import time
-from datetime import datetime
 
 import requests
 from django.conf import settings
+from django.utils import timezone
 
 
 logger = logging.getLogger(__name__)
@@ -44,6 +44,9 @@ def download_image(url, slug):
         msg = f'Network error attempting to connect to {url}:\n{exc}'
         logger.error(msg)
         return
+    if req.status_code >= 400:
+        logger.error(f"Unable to download image at {url}.\nStatus code: {req.status_code}")
+        return
     slug = slug + '.jpg'
     with open(os.path.join('media_cdn', os.path.basename(slug)), 'wb') as image_file:
         for chunk in req.iter_content(chunk_size=1024):
@@ -68,7 +71,7 @@ class TvdbApiClient:
 
     def set_token(self):
         self.token = self.get_new_token()
-        self.token_set_at = datetime.now()
+        self.token_set_at = timezone.now()
 
     def get_new_token(self):
         payload = {'apikey': self.apikey, 'username': self.username, 'userkey': self.userkey}

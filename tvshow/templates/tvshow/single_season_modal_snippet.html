@@ -2,7 +2,8 @@
   <div class="modal-dialog" rolepytho="document">
     <div class="modal-content">
       <div class="modal-header">
-        <form class="form-inline" action="/season_swt" method="post">{% csrf_token %}
+        <form class="form-inline" action="/season_swt" method="post">
+          {% csrf_token %}
           <button type="button" class="btn btn-sm btn-secondary float-xs-right" data-dismiss="modal">Close</button>
           <h4 class="modal-title float-xs-left" id="myModalLabel">Season {{ season.number }}</h4>
           <input type="hidden" name="season_swt" value="{{ season.id }}">
@@ -15,10 +16,11 @@
       </div>
       <div class="modal-body">
         <ul class="list-group">
-          {% for episode in season.episode_set.all %}
+          {% for episode in season.episode_set.all|dictsort:'number' %}
           <li class="list-group-item">
             {{ episode.number }}. <a data-toggle="collapse" href="#collapseS{{ episode.season.number }}E{{ episode.number }}" aria-expanded="false" aria-controls="collapseS{{ episode.season.number }}E{{ episode.number }}">{{ episode.episode_name }}</a> <small>{{ episode.first_aired }}</small>
-            <form class='form-inline float-xs-right' action="/episode_swt" method="post">{% csrf_token %}
+            <form class='form-inline float-xs-right' action="/episode_swt" method="post">
+              {% csrf_token %}
               <input type="hidden" name="episode_swt" value="{{ episode.id }}">
               {% if episode.status_watched %}
               <input type="checkbox" onclick="this.form.submit();" checked>

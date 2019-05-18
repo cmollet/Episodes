@@ -10,6 +10,7 @@ from tvshow.utils.tvdb_api_wrap import TvdbApiClient
 
 client = TvdbApiClient()
 
+
 class Show(models.Model):
     tvdb_id = models.CharField(max_length=50)
     series_name = models.CharField(max_length=50)
@@ -83,11 +84,12 @@ class Show(models.Model):
     def update_show_data(self):
         flag = False
         tvdbID = self.tvdb_id
-        current_season = self.season_set.all().last()
-        current_season_db_data = current_season.episode_set.all()
+        current_season = self.season_set.order_by('number').last()
+        current_season_db_data = current_season.episode_set.order_by('number')
         current_season_oln_data = client.get_season_episode_list(tvdbID, current_season.number)
         counter = 0
         if current_season_oln_data:
+            current_season_oln_data.sort(key=lambda x: x['number'])
             for db_episode, oln_episode in zip(current_season_db_data, current_season_oln_data):
                 db_episode.compare_or_update(oln_episode)
                 counter += 1
@@ -102,7 +104,6 @@ class Show(models.Model):
         new_seasons = client.get_all_episodes(tvdbID, range_starter)
         for i in range(len(new_seasons)):
             string = 'Season' + str(range_starter+i)
-            season_data = new_seasons[string]
             season = Season()
             season.add_season(self, i+range_starter)
             season_episodes_data = new_seasons[string]
@@ -202,13 +203,8 @@ class Episode(models.Model):
 
     def compare_or_update(self, new_data):
         self.episode_name = new_data['episodeName']
-        self.save()
-        if new_data['firstAired'] != "":
-            try:
-                self.first_aired = new_data['firstAired']
-                self.save()
-            except:
-                pass
+        if new_data['firstAired']:
+            self.first_aired = new_data['firstAired']
         if self.overview is None:
             self.overview = new_data['overview']
-            self.save()
+        self.save()
