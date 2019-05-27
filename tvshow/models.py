@@ -36,8 +36,8 @@ class Show(models.Model):
         self.slug = slugify(self.series_name)
         self.overview = data['overview']
         self.banner = 'http://thetvdb.com/banners/' + data['banner']
-        self.imbd_id = data['imdbID']
-        self.tvdb_id = data['tvdbID']
+        self.imbd_id = data['imdbId']
+        self.tvdb_id = data['id']
         self.site_rating = data['siteRating']
         self.network = data['network']
         self.running_status = runningStatus
