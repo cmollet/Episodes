@@ -17,10 +17,10 @@ from .utils.recommender import get_recommendations
 @login_required
 def home(request, view_type):
     if view_type == 'all':
-        show_data = Show.objects.order_by('-first_aired', '-modified')
+        show_data = Show.objects.order_by('first_aired')
         flag = False
     else:
-        show_data = Show.objects.order_by('-first_aired', '-modified')
+        show_data = Show.objects.order_by('first_aired')
         data = [show for show in show_data if not show.is_watched]
         show_data = data
         flag = True
