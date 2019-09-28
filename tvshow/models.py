@@ -159,6 +159,9 @@ class Season(models.Model):
             self.save()
         return flag
 
+    class Meta:
+        ordering = ['number']
+
 
 class Episode(models.Model):
     season = models.ForeignKey(Season, on_delete=models.CASCADE)
