@@ -74,7 +74,9 @@ class TvdbApiClient:
         self.token_set_at = timezone.now()
 
     def get_new_token(self):
-        payload = {'apikey': self.apikey, 'username': self.username, 'userkey': self.userkey}
+        # This returns a 401 Unauthorized now; apparently only the apikey value is needed ¯\_(ツ)_/¯
+        # payload = {'apikey': self.apikey, 'username': self.username, 'userkey': self.userkey}
+        payload = {'apikey': self.apikey}
         url = f'{self.domain}/login'
         r = requests.post(url, json=payload)
         return r.json()['token']
